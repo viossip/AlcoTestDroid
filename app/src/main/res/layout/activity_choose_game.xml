@@ -15,10 +15,10 @@
         android:layout_marginTop="20dp"/>
 
     <Button
-        android:id="@+id/btn_start_game"
+        android:id="@+id/btn_simple"
         android:layout_width="268dp"
         android:layout_height="60dp"
-        android:background="@drawable/button_start_game"
+        android:background="@drawable/button_simple"
         android:alpha="0.65"
         tools:layout_editor_absoluteX="58dp"
         tools:layout_editor_absoluteY="223dp"
@@ -27,23 +27,23 @@
         android:layout_marginTop="20dp" />
 
     <Button
-        android:id="@+id/btn_highscores"
+        android:id="@+id/btn_advanced"
         android:layout_width="268dp"
         android:layout_height="60dp"
-        android:background="@drawable/button_highscores"
+        android:background="@drawable/button_advanced"
         android:alpha="0.65"
         tools:layout_editor_absoluteX="58dp"
         tools:layout_editor_absoluteY="223dp"
-        android:layout_below="@+id/btn_start_game"
+        android:layout_below="@+id/btn_simple"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
 
     <Button
-        android:id="@+id/btn_login"
-        android:layout_below="@+id/btn_highscores"
+        android:id="@+id/btn_training"
+        android:layout_below="@+id/btn_advanced"
         android:layout_width="268dp"
         android:layout_height="60dp"
-        android:background="@drawable/button_login"
+        android:background="@drawable/button_training"
         android:alpha="0.65"
         tools:layout_editor_absoluteX="58dp"
         tools:layout_editor_absoluteY="223dp"
@@ -51,38 +51,15 @@
         android:layout_marginTop="20dp" />
 
     <Button
-        android:id="@+id/btn_exit_game"
+        android:id="@+id/btn_return"
         android:layout_width="268dp"
         android:layout_height="60dp"
-        android:background="@drawable/button_exit"
+        android:background="@drawable/button_return"
         tools:layout_editor_absoluteX="58dp"
         tools:layout_editor_absoluteY="223dp"
-        android:layout_below="@+id/btn_login"
+        android:layout_below="@+id/btn_training"
         android:alpha="0.65"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@+id/btn_exit_game"
-        android:layout_marginTop="20dp" >
-
-        <Button
-            android:id="@+id/btn_about"
-            android:layout_width="128dp"
-            android:layout_height="29dp"
-            android:layout_marginLeft="46dp"
-            android:layout_marginRight="12dp"
-            android:background="@drawable/button_about"
-            android:alpha="0.65"></Button>
-
-        <Button
-            android:id="@+id/btn_help"
-            android:layout_width="128dp"
-            android:layout_height="29dp"
-            android:background="@drawable/button_help"
-            android:alpha="0.65"></Button>
-    </LinearLayout>
 </RelativeLayout>
