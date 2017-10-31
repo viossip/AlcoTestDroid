@@ -63,4 +63,10 @@
         android:text="00:00:00"
         android:layout_gravity="bottom|center"/>
 
+    <ImageView
+        android:id="@+id/img_alcohol"
+        android:layout_width="276dp"
+        android:layout_height="500dp"
+        android:layout_gravity="bottom|center" />
+
 </FrameLayout>
