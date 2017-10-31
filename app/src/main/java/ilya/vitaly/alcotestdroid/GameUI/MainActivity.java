@@ -48,10 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         v.startAnimation(animTranslate);
-        Button thisButton = (Button) v;
-        //thisButton.setScaleType(ImageButton.ScaleType.FIT_CENTER);
-        //thisButton.setPadding(20, 20, 20, 20);
-
         hasPermittions = PermissionsHandler.requestPermissions(this);
 
         switch (v.getId()) {
@@ -84,16 +80,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 notifyUserPermissions();
         }
     }
-
-/*    private void getAllButtons(ViewGroup v) {
-        for (int i = 0; i < v.getChildCount(); i++) {
-            View child = v.getChildAt(i);
-            if (child instanceof ViewGroup)
-                getAllButtons((ViewGroup) child);
-            else if (child instanceof Button)
-                buttonsInActivity.add((Button) child);
-        }
-    }*/
 
     private void notifyUserPermissions() {
         Toast.makeText(this, "Please grant all requested permissions", Toast.LENGTH_SHORT).show();

@@ -39,13 +39,12 @@ public class ChooseGameActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         v.startAnimation(animTranslate);
-        Button thisButton = (Button) v;
 
         if(v.getId() != R.id.btn_return){
             Intent intent = new Intent(ChooseGameActivity.this, GameActivity.class);
             Bundle bundle = new Bundle();
 
-            //bundle.putInt("level", (Level.valueOf(thisButton.getTag().toString())).ordinal());
+            bundle.putInt("type", 3);
             intent.putExtras(bundle);
             startActivity(intent);
         }

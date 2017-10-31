@@ -1,9 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout
+    android:id="@+id/frame_layout_game"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ilya.vitaly.alcotestdroid.GameUI.GameActivity">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-</android.support.constraint.ConstraintLayout>
+    <SurfaceView
+        android:id="@+id/surface_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.wonderkiln.camerakit.CameraView
+        android:id="@+id/camera_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"/>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="40dp"
+        android:layout_marginRight="20dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/txt_end_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#59f0ed"
+            android:text="END"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/txt_start_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progress_bar"
+            android:text="000"
+            android:textColor="#59f0ed"
+            android:textSize="14sp"
+            android:layout_marginBottom="20dp" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:progressDrawable="@drawable/progressbar_states"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/txt_end_position" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_time"
+        android:layout_width="match_parent"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:layout_height="40dp"
+        android:text="00:00:00"
+        android:layout_gravity="bottom|center"/>
+
+</FrameLayout>
