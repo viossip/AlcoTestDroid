@@ -54,20 +54,23 @@ public class GameActivity extends AppCompatActivity {
     private float[] mR = new float[9];
     private float[] mOrientation = new float[3];
     private int[] gameResultList;
+    private double[] currentLocation;
+    private DateFormat formatter = new SimpleDateFormat("mm:ss");
 
     private GameTimer gameTimer;
 
     private boolean zIsStable, yIsStable, isLoose, isPopupOpen;
     private int steps = -1;
+    private int steps_to_win;
+    private long time_to_win;
+    private long current_time;
+    private String gameType;
 
     private long lastTime;
     private final int TIME_THRESHOLD = 100;
-    private final int STEPS_TO_WIN = 11;
     private final double MAX_STABLE_Y_ANGEL = 0.1;
     private final double MAX_STABLE_Z_ANGEL = 0.1;
     private static final int ANIMATION_DURATION = 3000;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,7 @@ public class GameActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_game);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //Disable screen shutdown.
+        setGameType(getIntent().getExtras());
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -88,12 +92,32 @@ public class GameActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         endGameAnimation = findViewById(R.id.end_game_animation);
 
-        progressBar.setMax(100);
+        progressBar.setMax(steps_to_win);
         isPopupOpen = false;
 
-        gameTimer = new GameTimer(60000, 1000, txtTime);
+        gameTimer = new GameTimer(time_to_win, 1000, txtTime);
         steps = 0;
         startPopup();
+    }
+
+    private void setGameType(Bundle extras) {
+        switch (extras.getString("type")){
+            case "Simple":
+                steps_to_win = 10;
+                time_to_win = 40 * 1000;
+                gameType = "Simple";
+                break;
+            case "Advanced":
+                steps_to_win = 20;
+                time_to_win = 20* 1000;
+                gameType = "Advanced";
+                break;
+            case "Training":
+                steps_to_win = -1;
+                time_to_win = -1;
+                gameType = "Advanced";
+                break;
+        }
     }
 
     @Override
@@ -147,8 +171,6 @@ public class GameActivity extends AppCompatActivity {
 
     public class GameTimer extends CountDownTimer {
         public TextView txtTime;
-        DateFormat formatter = new SimpleDateFormat("mm:ss");
-
 
         public GameTimer(long millisInFuture, long countDownInterval, TextView txtTime) {
             super(millisInFuture, countDownInterval);
@@ -157,17 +179,20 @@ public class GameActivity extends AppCompatActivity {
 
         @Override
         public void onTick(long millisToEnd) {
+            current_time = time_to_win - millisToEnd;
             txtTime.setText(formatter.format(millisToEnd));
         }
         @Override
         public void onFinish() {
-            cameraView.stop();
-            if (steps >= STEPS_TO_WIN) {
-                stopSensors();
-                finish();
-            } else {
-                changeAlcoholImg(AlcoholPosition.FALL);
-            }
+            if(time_to_win!= -1)
+                //cameraView.stop();
+                if (steps >= steps_to_win) {
+                    stopSensors();
+                    onGameEnd(true);
+                } else {
+                    changeAlcoholImg(AlcoholPosition.FALL);
+                    onGameEnd(false);
+                }
         }
     }
 
@@ -250,15 +275,22 @@ public class GameActivity extends AppCompatActivity {
         endGameAnimation(isWin);
 
         gameResultList= new int [3];
-        //gameResultList[1]=getMinutes();
-        //gameResultList[2]=getSeconds();
+        gameResultList[0]= isWin ? 1 : 0;
+        gameResultList[1]=(int) (current_time / 1000) % 60 ; // seconds
+        gameResultList[2]= steps;
+
+        currentLocation = new double[2];
+        //currentLocation[0] = gps.getLatitude();
+        //currentLocation[1] = gps.getLongitude();
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(GameActivity.this, OutcomeActivity.class);
-                bundle.putIntArray("isWin", gameResultList);
+                bundle.putIntArray("results", gameResultList);
+                bundle.putString("type", gameType);
+                bundle.putDoubleArray("location", currentLocation);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -315,12 +347,13 @@ public class GameActivity extends AppCompatActivity {
         }
 
         public void onSensorChanged(SensorEvent event) {
-            steps++;
-
-            progressBar.setProgress(steps);
-            if (steps >= STEPS_TO_WIN) {
-                stopSensors();
-                onGameEnd(true);
+            if (!isPopupOpen) {
+                steps++;
+                progressBar.setProgress(steps);
+                if (steps >= steps_to_win && steps_to_win != -1) {
+                    stopSensors();
+                    onGameEnd(true);
+                }
             }
         }
     };
