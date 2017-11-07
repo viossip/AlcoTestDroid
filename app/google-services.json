@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "108187552974",
+    "firebase_url": "https://alcotestdroid-master-ce90f.firebaseio.com",
+    "project_id": "alcotestdroid-master-ce90f",
+    "storage_bucket": "alcotestdroid-master-ce90f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108187552974:android:2a374511a6173361",
+        "android_client_info": {
+          "package_name": "ilya.vitaly.alcotestdroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "108187552974-8elnbj4hlibdade6gdo5khemr893gm7f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ilya.vitaly.alcotestdroid",
+            "certificate_hash": "d5a707c035e931caea55447befb8e2f3c9e67728"
+          }
+        },
+        {
+          "client_id": "108187552974-82m00h9r4lielm2sq45fco3h14ov1902.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnE1HkgYLhNZ8rJ7atStGZcbG7mZR1tVE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "108187552974-82m00h9r4lielm2sq45fco3h14ov1902.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
