@@ -43,8 +43,7 @@ public class ChooseGameActivity extends AppCompatActivity implements View.OnClic
         if(v.getId() != R.id.btn_return){
             Intent intent = new Intent(ChooseGameActivity.this, GameActivity.class);
             Bundle bundle = new Bundle();
-
-            bundle.putInt("type", 3);
+            bundle.putString( "type" ,v.getTag().toString());
             intent.putExtras(bundle);
             startActivity(intent);
         }

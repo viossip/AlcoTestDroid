@@ -24,7 +24,8 @@
         tools:layout_editor_absoluteY="223dp"
         android:layout_below="@+id/logo_image"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:tag="Simple"/>
 
     <Button
         android:id="@+id/btn_advanced"
@@ -36,7 +37,8 @@
         tools:layout_editor_absoluteY="223dp"
         android:layout_below="@+id/btn_simple"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:tag="Advanced"/>
 
     <Button
         android:id="@+id/btn_training"
@@ -48,7 +50,8 @@
         tools:layout_editor_absoluteX="58dp"
         tools:layout_editor_absoluteY="223dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:tag="Training"/>
 
     <Button
         android:id="@+id/btn_return"
