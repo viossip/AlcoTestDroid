@@ -1,11 +1,20 @@
 <resources>
     <string name="app_name">AlcoTestDroid</string>
     <string name="help_activity_title">Help:</string>
+    <string name="about_activity_title">About:</string>
     <string name="help_activity_manual">
         Put your device horizontally,
         parallel to the ground.
         Start walking and try not to spill
         the glass with alcohol
         while completing the distance in given time!
+    </string>
+    <string name="about_activity_text">
+        Course Project \n
+        By Vitaly Osipenkov \n
+        id:324716448 \n
+        and \n
+        Ilya Shtukmaister \n
+        id:309550325
     </string>
 </resources>
