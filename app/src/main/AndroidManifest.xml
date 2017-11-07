@@ -46,6 +46,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".GameUI.OutcomeActivity"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".GameUI.LoginActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 

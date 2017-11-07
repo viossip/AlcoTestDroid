@@ -8,7 +8,8 @@ public class User {
     String name;
     int time;
     int id;
-    String level;
+
+
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -17,7 +18,7 @@ public class User {
         this.name = name;
         this.time = time;
         this.id = id;
-        this.level = level;
+
 
     }
 
@@ -45,12 +46,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
+//    public String getLevel() {
+//        return level;
+//    }
+//
+//    public void setLevel(String level) {
+//        this.level = level;
+//    }
 
 }

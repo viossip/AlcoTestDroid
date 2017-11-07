@@ -63,7 +63,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_highscores:
                 intent = new Intent(MainActivity.this, HighscoresActivity.class);
                 break;
+            case R.id.btn_login :
+                intent = new Intent(MainActivity.this, LoginActivity.class);
+                break;
             case R.id.btn_exit_game:
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 finish();
                 System.exit(0);
                 break;
