@@ -4,11 +4,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,6 +44,8 @@ public class GameActivity extends AppCompatActivity {
     private ImageView imgAlcohol;
     private Button btnStartGame;
     public View v;
+    private AnimationDrawable animation;
+    private ImageView endGameAnimation;
 
     private float[] mLastAccelerometer = new float[3];
     private float[] mLastMagnetometer = new float[3];
@@ -49,6 +53,7 @@ public class GameActivity extends AppCompatActivity {
     private boolean mLastMagnetometerSet = false;
     private float[] mR = new float[9];
     private float[] mOrientation = new float[3];
+    private int[] gameResultList;
 
     private GameTimer gameTimer;
 
@@ -57,9 +62,12 @@ public class GameActivity extends AppCompatActivity {
 
     private long lastTime;
     private final int TIME_THRESHOLD = 100;
-    private final int STEPS_TO_WIN = 21;
-    private final double MAX_STABLE_Y_ANGEL = 0.05;
-    private final double MAX_STABLE_Z_ANGEL = 0.05;
+    private final int STEPS_TO_WIN = 11;
+    private final double MAX_STABLE_Y_ANGEL = 0.1;
+    private final double MAX_STABLE_Z_ANGEL = 0.1;
+    private static final int ANIMATION_DURATION = 3000;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +86,7 @@ public class GameActivity extends AppCompatActivity {
         cameraView = findViewById(R.id.camera_view);
         imgAlcohol = findViewById(R.id.img_alcohol);
         progressBar = findViewById(R.id.progress_bar);
+        endGameAnimation = findViewById(R.id.end_game_animation);
 
         progressBar.setMax(100);
         isPopupOpen = false;
@@ -106,7 +115,6 @@ public class GameActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         stopSensors();
-        gameTimer.cancel();
         cameraView.stop();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         finish();
@@ -228,23 +236,46 @@ public class GameActivity extends AppCompatActivity {
                 break;
             case FALL:
                 if (!isPopupOpen) {
+                    stopSensors();
+                    onGameEnd(false);
+
                     //TODO: Loose outcome intent, stop game.
+
                 }
                 break;
         }
+    }
+
+    private void onGameEnd(boolean isWin) {
+        endGameAnimation(isWin);
+
+        gameResultList= new int [3];
+        //gameResultList[1]=getMinutes();
+        //gameResultList[2]=getSeconds();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Bundle bundle = new Bundle();
+                Intent intent = new Intent(GameActivity.this, OutcomeActivity.class);
+                bundle.putIntArray("isWin", gameResultList);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        }, ANIMATION_DURATION);
     }
 
     private void getRotationDirections(float y,  float z) {
         yIsStable = y >= -MAX_STABLE_Y_ANGEL && y <= MAX_STABLE_Y_ANGEL;
         zIsStable = z >= -MAX_STABLE_Z_ANGEL && z <= MAX_STABLE_Z_ANGEL;
 
-        boolean ySlopedLeft = yIsStable && z < 0.15 && z > MAX_STABLE_Z_ANGEL;
-        boolean ySlopedRight = yIsStable && z > -0.15 && z < -MAX_STABLE_Z_ANGEL;
+        boolean ySlopedLeft = yIsStable && z < 0.2 && z > MAX_STABLE_Z_ANGEL;
+        boolean ySlopedRight = yIsStable && z > -0.2 && z < -MAX_STABLE_Z_ANGEL;
 
-        boolean zSlopedLeft = zIsStable && y > MAX_STABLE_Y_ANGEL && y <= 0.1;
-        boolean zSlopedRight = zIsStable && y >= -0.1 && y < -MAX_STABLE_Y_ANGEL;
+        boolean zSlopedLeft = zIsStable && y > MAX_STABLE_Y_ANGEL && y <= 0.15;
+        boolean zSlopedRight = zIsStable && y >= -0.15 && y < -MAX_STABLE_Y_ANGEL;
 
-        isLoose = y > 0.1 || y < -0.1 || z > 0.15 || z < -0.15;
+        isLoose = y > 0.15 || y < -0.15 || z > 0.2 || z < -0.2;
 
         if (yIsStable && zIsStable) {
 
@@ -288,10 +319,22 @@ public class GameActivity extends AppCompatActivity {
 
             progressBar.setProgress(steps);
             if (steps >= STEPS_TO_WIN) {
-                //TODO: Game loose intent and outcome activity, stop sensors.
+                stopSensors();
+                onGameEnd(true);
             }
         }
     };
+
+    public void endGameAnimation(boolean isWin){
+        if(isWin)
+            endGameAnimation.setBackgroundResource(R.drawable.animation_win);
+        else
+            endGameAnimation.setBackgroundResource(R.drawable.animation_loss);
+
+        gameTimer.cancel();
+        animation = (AnimationDrawable) endGameAnimation.getBackground();
+        animation.start();
+    }
 
     public void stopSensors(){
         sensorManager.unregisterListener(stabilityListener);

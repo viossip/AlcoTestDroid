@@ -65,8 +65,14 @@
 
     <ImageView
         android:id="@+id/img_alcohol"
-        android:layout_width="276dp"
-        android:layout_height="500dp"
-        android:layout_gravity="bottom|center" />
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center" />
+
+    <ImageView
+        android:id="@+id/end_game_animation"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:layout_gravity="center" />
 
 </FrameLayout>
