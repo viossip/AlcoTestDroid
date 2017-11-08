@@ -9,8 +9,6 @@ public class User {
     int time;
     int id;
 
-
-
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
@@ -18,8 +16,6 @@ public class User {
         this.name = name;
         this.time = time;
         this.id = id;
-
-
     }
 
     public String getName() {
