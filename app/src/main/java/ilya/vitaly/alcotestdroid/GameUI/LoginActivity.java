@@ -43,11 +43,11 @@ public class LoginActivity extends AppCompatActivity {
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseInstance;
 
-    private String userId;
+    private String userId, userName,userPass, userEmail;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private EditText mEmail, mPassword;
-    private Button btnSignIn,btnSignOut,btnAddItems;
+    private EditText loginEmail, loginPass,regEmail, regPass, regName;
+    private Button btnSignIn,btnSignOut,btnAddItems ,btnRegister,btnShowRegForm;
     Context context = this;
 
     @Override
@@ -57,11 +57,11 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         // buttons ///////
 
-        mEmail = (EditText) findViewById(R.id.email);
-        mPassword = (EditText) findViewById(R.id.password);
-        btnSignIn = (Button) findViewById(R.id.email_sign_in_button);
-        btnSignOut = (Button) findViewById(R.id.email_sign_out_button);
-//        btnAddItems = (Button) findViewById(R.id.add_item_screen);
+        loginEmail = (EditText) findViewById(R.id.email);
+        loginPass = (EditText) findViewById(R.id.password);
+        btnSignIn = (Button) findViewById(R.id.sign_in_button);
+        btnSignOut = (Button) findViewById(R.id.sign_out_button);
+        btnShowRegForm = (Button) findViewById(R.id.show_register_btn);
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -84,21 +84,45 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                     toastMessage("Successfully signed out.");
                 }
-                // ...
             }
         };
-
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = mEmail .getText().toString().trim();
-                String pass = mPassword .getText().toString().trim();
+                String email = loginEmail .getText().toString().trim();
+                String pass = loginPass .getText().toString().trim();
                 if(!email.equals("") && !pass.equals("")){
                     checkAuth(email,pass);
                 }else{
                     toastMessage("You didn't fill in all the fields.");
                 }
+            }
+        });
+
+        btnShowRegForm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.register_form).setVisibility(View.VISIBLE);
+                btnRegister = (Button) findViewById(R.id.register_button);
+                regEmail = (EditText) findViewById(R.id.reg_email);
+                regPass = (EditText) findViewById(R.id.reg_password);
+                regName = (EditText) findViewById(R.id.reg_name);
+                btnRegister.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        userEmail = regEmail.getText().toString().trim();
+                        userPass = regPass.getText().toString().trim();
+                        userName = regName.getText().toString().trim();
+
+                        if(!userEmail.isEmpty() && !userPass.isEmpty() && !userName.isEmpty()){
+                            createUser();
+                        }else {
+                            toastMessage("You didn't fill in all the fields.");
+                        }
+                    }
+                });
+
             }
         });
 
@@ -109,15 +133,33 @@ public class LoginActivity extends AppCompatActivity {
                 toastMessage("Signing Out...");
             }
         });
+    }
 
-//        btnAddItems.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "onClick: Switching Activities.");
-////                Intent intent = new Intent(MainActivity.this, AddItemsToDatabase.class);
-////                startActivity(intent);
-//            }
-//        });
+    private void createUser() {
+        if(userEmail != null && userPass != null && userName != null)
+            mAuth.createUserWithEmailAndPassword(userEmail, userPass)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "createUserWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                addUserToDB(new User(Integer.parseInt(user.getUid()),user.getEmail(), userName));
+                               toastMessage("You have register " + user.getEmail());
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(context, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                    });
+    }
+
+    private void addUserToDB(User user) {
+
     }
 
     private void checkAuth(String email, String pass) {
@@ -126,24 +168,24 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(!task.isSuccessful()) {
-                            try {
-                                throw task.getException();
-                            } catch(FirebaseAuthWeakPasswordException e) {
-                                mPassword.setError("---------------WeakPass----------");
-                                mPassword.requestFocus();
-                            } catch(FirebaseAuthInvalidCredentialsException e) {
-                                mEmail.setError("---------------INVALID CRED---------");
-                                mEmail.requestFocus();
-                            } catch(FirebaseAuthUserCollisionException e) {
-                                mEmail.setError("---------------AUTH COLLISION---------");
-                                mEmail.requestFocus();
-                            } catch(Exception e) {
-                                Log.e(TAG, e.getMessage());
-                            }
-                        }
-                    }
-                        /*if (task.isSuccessful()) {
+//                        if(!task.isSuccessful()) {
+//                            try {
+//                                throw task.getException();
+//                            } catch(FirebaseAuthWeakPasswordException e) {
+//                                mPassword.setError("---------------WeakPass----------");
+//                                mPassword.requestFocus();
+//                            } catch(FirebaseAuthInvalidCredentialsException e) {
+//                                mEmail.setError("---------------INVALID CRED---------");
+//                                mEmail.requestFocus();
+//                            } catch(FirebaseAuthUserCollisionException e) {
+//                                mEmail.setError("---------------AUTH COLLISION---------");
+//                                mEmail.requestFocus();
+//                            } catch(Exception e) {
+//                                Log.e(TAG, e.getMessage());
+//                            }
+//                        }
+
+                        if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
@@ -157,9 +199,10 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         // ...
-                    }*/
+                    }
                 });
     }
+
 
     @Override
     public void onStart() {

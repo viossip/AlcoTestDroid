@@ -5,30 +5,32 @@ package ilya.vitaly.alcotestdroid.Entities;
  */
 
 public class User {
-    String name;
-    int time;
-    int id;
 
+
+    int id;
+    String email;
+    String name;
+    Game[] games;
 
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
-    public User(String name, int time, int id) {
-        this.name = name;
-        this.time = time;
+
+    public User(int id, String email, String name) {
         this.id = id;
+        this.email = email;
+        this.name = name;
+    }
 
-
+    public String getEmail() {
+        return email;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getTime() {
-        return time;
-    }
 
     public int getID() {
         return id;
@@ -38,20 +40,24 @@ public class User {
         this.name = name;
     }
 
-    public void setTime(int time) {
-        this.time = time;
-    }
 
     public void setID(int id) {
         this.id = id;
     }
 
-//    public String getLevel() {
-//        return level;
-//    }
-//
-//    public void setLevel(String level) {
-//        this.level = level;
-//    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setGame(Game game) {
+        if (game.getType().equals("Simple"))
+            games[0] = game;
+        else
+            games[1] = game;
+
+    }
+
+
+
 
 }
