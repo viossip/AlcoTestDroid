@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "284556127876",
+    "firebase_url": "https://alcotestdroid-master.firebaseio.com",
+    "project_id": "alcotestdroid-master",
+    "storage_bucket": "alcotestdroid-master.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284556127876:android:2a374511a6173361",
+        "android_client_info": {
+          "package_name": "ilya.vitaly.alcotestdroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "284556127876-s4hhtn1jrdct6qlhsiaur4pb9j07gasb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKswuN5hL1fqKdDZq7wZNdeadMJwJPfmQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

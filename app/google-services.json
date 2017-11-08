@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "108187552974-0roeueh453bflemnqq5u4bdju92fb322.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ilya.vitaly.alcotestdroid",
+            "certificate_hash": "2779c6da293078f70b2aefd0299e9b38a0b78773"
+          }
+        },
+        {
           "client_id": "108187552974-8elnbj4hlibdade6gdo5khemr893gm7f.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
