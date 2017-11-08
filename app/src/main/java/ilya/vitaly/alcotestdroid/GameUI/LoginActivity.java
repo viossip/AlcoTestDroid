@@ -17,6 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -120,9 +123,27 @@ public class LoginActivity extends AppCompatActivity {
     private void checkAuth(String email, String pass) {
         mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
+                        if(!task.isSuccessful()) {
+                            try {
+                                throw task.getException();
+                            } catch(FirebaseAuthWeakPasswordException e) {
+                                mPassword.setError("---------------WeakPass----------");
+                                mPassword.requestFocus();
+                            } catch(FirebaseAuthInvalidCredentialsException e) {
+                                mEmail.setError("---------------INVALID CRED---------");
+                                mEmail.requestFocus();
+                            } catch(FirebaseAuthUserCollisionException e) {
+                                mEmail.setError("---------------AUTH COLLISION---------");
+                                mEmail.requestFocus();
+                            } catch(Exception e) {
+                                Log.e(TAG, e.getMessage());
+                            }
+                        }
+                    }
+                        /*if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
@@ -136,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         // ...
-                    }
+                    }*/
                 });
     }
 
