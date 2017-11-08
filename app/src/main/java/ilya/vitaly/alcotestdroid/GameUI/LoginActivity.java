@@ -46,21 +46,27 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mEmail, mPassword;
     private Button btnSignIn,btnSignOut,btnAddItems;
     Context context = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().hide();
+        // buttons ///////
+
         mEmail = (EditText) findViewById(R.id.email);
         mPassword = (EditText) findViewById(R.id.password);
         btnSignIn = (Button) findViewById(R.id.email_sign_in_button);
         btnSignOut = (Button) findViewById(R.id.email_sign_out_button);
 //        btnAddItems = (Button) findViewById(R.id.add_item_screen);
 
+
         mAuth = FirebaseAuth.getInstance();
+        /// database ///
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
 
-        myRef.setValue("Hello, World!");
+//        myRef.setValue("Hello, World!");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -78,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
                 // ...
             }
         };
+
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
