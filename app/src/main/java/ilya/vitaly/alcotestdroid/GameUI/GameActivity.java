@@ -1,9 +1,11 @@
 package ilya.vitaly.alcotestdroid.GameUI;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -11,6 +13,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,11 +26,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.wonderkiln.camerakit.CameraView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import ilya.vitaly.alcotestdroid.R;
+import ilya.vitaly.alcotestdroid.Services.GpsLocation;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -46,6 +53,7 @@ public class GameActivity extends AppCompatActivity {
     public View v;
     private AnimationDrawable animation;
     private ImageView endGameAnimation;
+    private GpsLocation gps;
 
     private float[] mLastAccelerometer = new float[3];
     private float[] mLastMagnetometer = new float[3];
@@ -65,11 +73,13 @@ public class GameActivity extends AppCompatActivity {
     private long time_to_win;
     private long current_time;
     private String gameType;
+    private double latitude;
+    private double longitude;
 
     private long lastTime;
-    private final int TIME_THRESHOLD = 100;
-    private final double MAX_STABLE_Y_ANGEL = 0.1;
-    private final double MAX_STABLE_Z_ANGEL = 0.1;
+    private final int TIME_THRESHOLD = 80;
+    private final double MAX_STABLE_Y_ANGEL = 0.15;
+    private final double MAX_STABLE_Z_ANGEL = 0.15;
     private static final int ANIMATION_DURATION = 3000;
 
     @Override
@@ -80,12 +90,14 @@ public class GameActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //Disable screen shutdown.
         setGameType(getIntent().getExtras());
 
+        //--- Create sensors instances ---//
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         stepsSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
+        //--- Get views of layout ---//
         txtTime = findViewById(R.id.txt_time);
         cameraView = findViewById(R.id.camera_view);
         imgAlcohol = findViewById(R.id.img_alcohol);
@@ -95,28 +107,33 @@ public class GameActivity extends AppCompatActivity {
         progressBar.setMax(steps_to_win);
         isPopupOpen = false;
 
+        //--- Set game timer ---//
         gameTimer = new GameTimer(time_to_win, 1000, txtTime);
         steps = 0;
+
+        //--- Notify user to start ---//
         startPopup();
     }
 
     private void setGameType(Bundle extras) {
-        switch (extras.getString("type")){
-            case "Simple":
-                steps_to_win = 10;
-                time_to_win = 40 * 1000;
-                gameType = "Simple";
-                break;
-            case "Advanced":
-                steps_to_win = 20;
-                time_to_win = 20* 1000;
-                gameType = "Advanced";
-                break;
-            case "Training":
-                steps_to_win = -1;
-                time_to_win = -1;
-                gameType = "Advanced";
-                break;
+        if (extras != null){
+            switch (extras.getString("type")){
+                case "Simple":
+                    steps_to_win = 10;
+                    time_to_win = 40 * 1000;
+                    gameType = "Simple";
+                    break;
+                case "Advanced":
+                    steps_to_win = 20;
+                    time_to_win = 20* 1000;
+                    gameType = "Advanced";
+                    break;
+                case "Training":
+                    steps_to_win = -1;
+                    time_to_win = -1;
+                    gameType = "Advanced";
+                    break;
+            }
         }
     }
 
@@ -185,7 +202,6 @@ public class GameActivity extends AppCompatActivity {
         @Override
         public void onFinish() {
             if(time_to_win!= -1)
-                //cameraView.stop();
                 if (steps >= steps_to_win) {
                     stopSensors();
                     onGameEnd(true);
@@ -244,12 +260,12 @@ public class GameActivity extends AppCompatActivity {
                 imgAlcohol.setScaleX(1f);
                 break;
             case RIGHT:
-                imgAlcohol.setBackgroundResource(R.drawable.whiskey_right);
+                imgAlcohol.setBackgroundResource(R.drawable.whiskey_left);
                 imgAlcohol.setScaleX(1f);
                 break;
             case LEFT:
-                imgAlcohol.setBackgroundResource(R.drawable.whiskey_left);
-                imgAlcohol.setScaleX(-1f);
+                imgAlcohol.setBackgroundResource(R.drawable.whiskey_right);
+                imgAlcohol.setScaleX(1f);
                 break;
             case FRONT:
                 imgAlcohol.setBackgroundResource(R.drawable.whiskey_front);
@@ -263,31 +279,32 @@ public class GameActivity extends AppCompatActivity {
                 if (!isPopupOpen) {
                     stopSensors();
                     onGameEnd(false);
-
-                    //TODO: Loose outcome intent, stop game.
-
                 }
                 break;
         }
     }
 
-    private void onGameEnd(boolean isWin) {
+    private void onGameEnd(final boolean isWin) {
         endGameAnimation(isWin);
 
-        gameResultList= new int [3];
-        gameResultList[0]= isWin ? 1 : 0;
-        gameResultList[1]=(int) (current_time / 1000) % 60 ; // seconds
-        gameResultList[2]= steps;
+        gameResultList= new int [2];
+        gameResultList[0]=(int) (current_time / 1000) % 60 ; // seconds
+        gameResultList[1]= steps;
 
-        currentLocation = new double[2];
-        //currentLocation[0] = gps.getLatitude();
-        //currentLocation[1] = gps.getLongitude();
+        if(isWin){
+            currentLocation = new double[2];
+            if(getCurrentLocation()){
+                currentLocation[0] = gps.getLatitude();
+                currentLocation[1] = gps.getLongitude();
+            }
+        }
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(GameActivity.this, OutcomeActivity.class);
+                bundle.putBoolean("isWin", isWin);
                 bundle.putIntArray("results", gameResultList);
                 bundle.putString("type", gameType);
                 bundle.putDoubleArray("location", currentLocation);
@@ -301,13 +318,13 @@ public class GameActivity extends AppCompatActivity {
         yIsStable = y >= -MAX_STABLE_Y_ANGEL && y <= MAX_STABLE_Y_ANGEL;
         zIsStable = z >= -MAX_STABLE_Z_ANGEL && z <= MAX_STABLE_Z_ANGEL;
 
-        boolean ySlopedLeft = yIsStable && z < 0.2 && z > MAX_STABLE_Z_ANGEL;
-        boolean ySlopedRight = yIsStable && z > -0.2 && z < -MAX_STABLE_Z_ANGEL;
+        boolean ySlopedLeft = yIsStable && z <= 0.3 && z >= MAX_STABLE_Z_ANGEL;
+        boolean ySlopedRight = yIsStable && z >= -0.3 && z <= -MAX_STABLE_Z_ANGEL;
 
-        boolean zSlopedLeft = zIsStable && y > MAX_STABLE_Y_ANGEL && y <= 0.15;
-        boolean zSlopedRight = zIsStable && y >= -0.15 && y < -MAX_STABLE_Y_ANGEL;
+        boolean zSlopedLeft = zIsStable && y > MAX_STABLE_Y_ANGEL && y <= 0.3;
+        boolean zSlopedRight = zIsStable && y >= -0.3 && y < -MAX_STABLE_Y_ANGEL;
 
-        isLoose = y > 0.15 || y < -0.15 || z > 0.2 || z < -0.2;
+        isLoose = y > 0.3 || y < -0.3 || z > 3 || z < -3;
 
         if (yIsStable && zIsStable) {
 
@@ -372,5 +389,22 @@ public class GameActivity extends AppCompatActivity {
     public void stopSensors(){
         sensorManager.unregisterListener(stabilityListener);
         sensorManager.unregisterListener(stepCounterListener);
+    }
+
+    private boolean getCurrentLocation(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(GameActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        else{
+            gps = new GpsLocation(this, GameActivity.this);
+            if (gps.canGetLocation()) {
+                Toast.makeText(getApplicationContext(), "your location is\n Lat: " + latitude + "\nLong : " + longitude, Toast.LENGTH_SHORT).show();
+            } else {
+                gps.showSettingsAlert();
+            }
+            return true;
+        }
+        return  false;
     }
 }

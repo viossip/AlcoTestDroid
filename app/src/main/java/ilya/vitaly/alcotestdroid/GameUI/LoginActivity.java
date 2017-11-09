@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -37,9 +38,7 @@ import ilya.vitaly.alcotestdroid.R;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private TextView txtDetails;
-    private EditText inputName, inputEmail;
-    private Button btnSave;
+
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseInstance;
 
@@ -69,8 +68,6 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         mFirebaseDatabase = database.getReference("Users");
 
-//        myRef.setValue("Hello, World!");
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -79,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
+                    clearForm((ViewGroup) findViewById(R.id.login_activity));
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -136,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void createUser() {
-        if(userEmail != null && userPass != null && userName != null)
+        if (userEmail != null && userPass != null && userName != null)
             mAuth.createUserWithEmailAndPassword(userEmail, userPass)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -145,8 +143,9 @@ public class LoginActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
-                               addUserToDB(new User(user.getUid(),user.getEmail(), userName), mFirebaseDatabase);
-                               toastMessage("You have register " + user.getEmail());
+                                addUserToDB(new User(user.getUid(), user.getEmail(), userName), mFirebaseDatabase);
+                                toastMessage("You have register " + user.getEmail());
+                                clearForm((ViewGroup) findViewById(R.id.login_activity));
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -156,6 +155,18 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     });
+    }
+
+    private void clearForm(ViewGroup group)
+    {
+        for (int i = 0, count = group.getChildCount(); i < count; ++i) {
+            View view = group.getChildAt(i);
+            if (view instanceof EditText)
+                ((EditText)view).setText("");
+
+            if(view instanceof ViewGroup && (((ViewGroup)view).getChildCount() > 0))
+                clearForm((ViewGroup)view);
+        }
     }
 
     private void addUserToDB(User user ,DatabaseReference myref) {

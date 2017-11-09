@@ -9,6 +9,12 @@
         the glass with alcohol
         while completing the distance in given time!
     </string>
+    <string name="start_game_manual">
+        Put your device horizontally,\n
+        parallel to the ground.
+        Press button,\n
+        when you are ready to start!
+    </string>
     <string name="about_activity_text">
         Course Project \n
         By Vitaly Osipenkov \n

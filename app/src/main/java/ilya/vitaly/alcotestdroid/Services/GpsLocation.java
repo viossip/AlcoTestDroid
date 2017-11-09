@@ -115,7 +115,6 @@ public class GpsLocation extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return location;
     }
 
@@ -138,17 +137,14 @@ public class GpsLocation extends Service {
                 longitude = location.getLongitude();
             }
         }
-
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
 
         }
-
         @Override
         public void onProviderEnabled(String provider) {
 
         }
-
         @Override
         public void onProviderDisabled(String provider) {
 
@@ -162,8 +158,6 @@ public class GpsLocation extends Service {
         if(location != null){
             latitude = location.getLatitude();
         }
-
-        // return latitude
         return latitude;
     }
 
@@ -175,8 +169,6 @@ public class GpsLocation extends Service {
         if(location != null){
             longitude = location.getLongitude();
         }
-
-        // return longitude
         return longitude;
     }
 

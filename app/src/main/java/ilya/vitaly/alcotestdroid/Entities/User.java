@@ -54,10 +54,9 @@ public class User {
             games[0] = game;
         else
             games[1] = game;
-
     }
 
-
-
-
 }
+
+
+

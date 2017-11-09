@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -17,9 +16,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-
-import ilya.vitaly.alcotestdroid.Entities.Game;
 import ilya.vitaly.alcotestdroid.Entities.User;
 import ilya.vitaly.alcotestdroid.R;
 
@@ -29,19 +25,16 @@ public class ListFragment extends Fragment{
     private ArrayList<User> users = new ArrayList<>();
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
+
     String listType;
-
-
 
     public void setListType(String listType) {
         this.listType = listType;
     }
 
     public ListFragment() {
-
         // Required empty public constructor
     }
-
 
 
     @Override
