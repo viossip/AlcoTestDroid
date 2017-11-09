@@ -162,7 +162,7 @@ public class LoginActivity extends AppCompatActivity {
         myref.child("ID").child(user.getID()).setValue(user);
     }
 
-    private void checkAuth(String email, String pass) {
+    private void checkAuth(final String email, String pass) {
         mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 
@@ -208,8 +208,10 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+
         try {
             toastMessage(currentUser.getUid());
+            mAuth.addAuthStateListener(mAuthListener);
         } catch (Exception e) {
             mAuth.addAuthStateListener(mAuthListener);
 
