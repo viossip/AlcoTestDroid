@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         /// database ///
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
+        mFirebaseDatabase = database.getReference("Users");
 
 //        myRef.setValue("Hello, World!");
 
@@ -145,7 +145,9 @@ public class LoginActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                addUserToDB(new User(Integer.parseInt(user.getUid()),user.getEmail(), userName));
+                               addUserToDB(new User(user.getUid(),user.getEmail(), userName), mFirebaseDatabase);
+                                User localUser = new User (user.getUid(),user.getEmail(), userName);
+//                                mFirebaseDatabase.child("users").child(localUser.getID()).setValue(user);
                                toastMessage("You have register " + user.getEmail());
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -158,8 +160,8 @@ public class LoginActivity extends AppCompatActivity {
                     });
     }
 
-    private void addUserToDB(User user) {
-
+    private void addUserToDB(User user ,DatabaseReference myref) {
+        myref.child("ID").child(user.getID()).setValue(user);
     }
 
     private void checkAuth(String email, String pass) {

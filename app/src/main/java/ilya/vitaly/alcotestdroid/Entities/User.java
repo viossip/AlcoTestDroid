@@ -7,7 +7,7 @@ package ilya.vitaly.alcotestdroid.Entities;
 public class User {
 
 
-    int id;
+    String id;
     String email;
     String name;
     Game[] games;
@@ -17,7 +17,7 @@ public class User {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public User(int id, String email, String name) {
+    public User(String id, String email, String name) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -32,7 +32,7 @@ public class User {
     }
 
 
-    public int getID() {
+    public String getID() {
         return id;
     }
 
@@ -41,7 +41,7 @@ public class User {
     }
 
 
-    public void setID(int id) {
+    public void setID(String id) {
         this.id = id;
     }
 
