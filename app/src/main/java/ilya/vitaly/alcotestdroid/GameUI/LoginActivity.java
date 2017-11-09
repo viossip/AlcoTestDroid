@@ -57,8 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         // buttons ///////
 
-        loginEmail = (EditText) findViewById(R.id.email);
-        loginPass = (EditText) findViewById(R.id.password);
+        loginEmail = (EditText) findViewById(R.id.login_email);
+        loginPass = (EditText) findViewById(R.id.login_password);
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
         btnSignOut = (Button) findViewById(R.id.sign_out_button);
         btnShowRegForm = (Button) findViewById(R.id.show_register_btn);
