@@ -146,8 +146,6 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
                                addUserToDB(new User(user.getUid(),user.getEmail(), userName), mFirebaseDatabase);
-                                User localUser = new User (user.getUid(),user.getEmail(), userName);
-//                                mFirebaseDatabase.child("users").child(localUser.getID()).setValue(user);
                                toastMessage("You have register " + user.getEmail());
                             } else {
                                 // If sign in fails, display a message to the user.
