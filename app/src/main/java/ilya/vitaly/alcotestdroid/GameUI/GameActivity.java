@@ -77,7 +77,7 @@ public class GameActivity extends AppCompatActivity {
     private double longitude;
 
     private long lastTime;
-    private final int TIME_THRESHOLD = 80;
+    private final int TIME_THRESHOLD = 50;
     private final double MAX_STABLE_Y_ANGEL = 0.15;
     private final double MAX_STABLE_Z_ANGEL = 0.15;
     private static final int ANIMATION_DURATION = 3000;

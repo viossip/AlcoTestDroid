@@ -1,5 +1,7 @@
 package ilya.vitaly.alcotestdroid.Entities;
 
+import android.location.Location;
+
 /**
  * Created by vital on 09/11/2017.
  */
@@ -10,12 +12,16 @@ public class Player {
     private String time;
     private String steps;
     private String gameType;
+    private String latitude;
+    private String longitude;
 
-    public Player(String name, String time, String steps, String gameType) {
+    public Player(String name, String time, String steps, String gameType,String latitude, String longitude) {
         this.name = name;
         this.time = time;
         this.steps = steps;
         this.gameType = gameType;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getName() {
@@ -50,6 +56,19 @@ public class Player {
         this.gameType = gameType;
     }
 
+    public String getLatitude() {
+        return latitude;
+    }
 
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
 
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
 }

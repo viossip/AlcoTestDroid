@@ -13,8 +13,11 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import ilya.vitaly.alcotestdroid.Entities.Player;
 import ilya.vitaly.alcotestdroid.R;
@@ -52,7 +55,7 @@ public class OutcomeActivity extends AppCompatActivity {
         user = auth.getCurrentUser();
 
         db = FirebaseDatabase.getInstance();
-        dbRef = db.getReference("Players");
+        //dbRef =
 
         Bundle bundle = getIntent().getExtras();
         isWin = bundle.getBoolean("isWin");
@@ -64,18 +67,23 @@ public class OutcomeActivity extends AppCompatActivity {
         timeSecs = gameResultList[0];
         steps = gameResultList[1];
 
-        if(user != null)
-            userName = user.getEmail().split("\\@")[0].substring(0, 1).toUpperCase() + user.getEmail().substring(1);
+        if(user != null){
+            userName = user.getEmail().split("[@._]")[0].substring(0, 1).toUpperCase() +
+                    user.getEmail().split("[@._]")[0].substring(1);
+
+        }
         else
             userName = "Guest";
 
-        if(isWin && inLeaderBoard()){
-            if(userExists()){
+        if(isWin && userExists()){
+            if(inLeaderBoard()){
 
             }else{
                 currentLocation = bundle.getDoubleArray("location");
-                dbRef.setValue(new Player(user.getEmail(),
-                        String.valueOf(timeSecs), String.valueOf(steps), gameType));
+                DatabaseReference newUser =db.getReference("Players").push();
+                newUser.setValue(new Player(userName,
+                        String.valueOf(timeSecs), String.valueOf(steps), gameType,
+                        String.valueOf(currentLocation[0]), String.valueOf(currentLocation[1])));
             }
         }
 
@@ -115,10 +123,25 @@ public class OutcomeActivity extends AppCompatActivity {
     }
 
     private boolean userExists() {
-        return false;
+
+        DatabaseReference rootRef = db.getReference("Players");
+        rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.hasChild(userName)) {
+                    //TODO
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return true;
     }
 
     private boolean inLeaderBoard() {
-        return true;
+        return false;
     }
 }
