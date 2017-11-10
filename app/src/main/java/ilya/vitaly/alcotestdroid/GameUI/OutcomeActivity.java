@@ -70,7 +70,6 @@ public class OutcomeActivity extends AppCompatActivity {
         if(user != null){
             userName = user.getEmail().split("[@._]")[0].substring(0, 1).toUpperCase() +
                     user.getEmail().split("[@._]")[0].substring(1);
-
         }
         else
             userName = "Guest";
@@ -88,6 +87,8 @@ public class OutcomeActivity extends AppCompatActivity {
         }
 
         outcomeText.setText(userName + ", you are: " );
+        if(isWin)
+            resultsText.setText("--Results: time: " + timeSecs + ", steps: " + steps);
         imageView.setImageResource(isWin ? R.drawable.winner: R.drawable.looser);
 
 
